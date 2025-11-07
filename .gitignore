@@ -1,5 +1,6 @@
 # Data directory with GTFS and OSM files
-data/
+data/*
+!data/README.md
 
 # Environment files
 .env
