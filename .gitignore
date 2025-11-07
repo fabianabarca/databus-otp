@@ -1,0 +1,20 @@
+# Data directory with GTFS and OSM files
+data/
+
+# Environment files
+.env
+.env.local
+
+# Docker volumes
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
