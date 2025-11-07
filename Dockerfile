@@ -17,9 +17,10 @@ RUN mkdir -p /var/otp/graphs
 WORKDIR /var/otp
 
 # Download OpenTripPlanner
-# Note: The -k flag is used here for compatibility with development/CI environments
-# that may have self-signed certificates. In production builds without certificate
-# issues, you can safely remove the -k flag for secure downloads.
+# Note: The -k flag is used for compatibility with CI/development environments
+# that may have self-signed certificates. In production environments with proper
+# SSL certificates, you can remove the -k flag for secure downloads by editing
+# this Dockerfile and rebuilding: curl -L -o otp.jar https://github.com/...
 RUN curl -kL -o otp.jar \
     https://github.com/opentripplanner/OpenTripPlanner/releases/download/v${OTP_VERSION}/otp-${OTP_VERSION}-shaded.jar
 
