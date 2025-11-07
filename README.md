@@ -57,7 +57,7 @@ docker run -d -p 8080:8080 -v $(pwd)/data:/var/otp/graphs --name opentripplanner
 
 ### Memory Settings
 
-By default, the JVM is allocated 4GB of memory. You can adjust this in `docker-compose.yml`:
+By default, the JVM is allocated 4GB of memory. You can adjust this by setting the `JAVA_OPTS` environment variable in `docker-compose.yml`:
 
 ```yaml
 environment:
@@ -68,6 +68,8 @@ Or when running with Docker:
 ```bash
 docker run -d -p 8080:8080 -e JAVA_OPTS="-Xmx8G" -v $(pwd)/data:/var/otp/graphs databus-otp
 ```
+
+The `JAVA_OPTS` environment variable allows you to customize JVM options without rebuilding the image.
 
 ### Data Directory
 

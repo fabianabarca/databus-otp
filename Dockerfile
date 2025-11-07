@@ -3,10 +3,11 @@ FROM eclipse-temurin:21-jre
 
 # Set OTP version
 ENV OTP_VERSION=2.5.0
+ENV JAVA_OPTS="-Xmx4G"
 
-# Install wget and other utilities
+# Install curl for downloading OTP
 RUN apt-get update && \
-    apt-get install -y wget && \
+    apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Create directories for OTP
@@ -16,11 +17,20 @@ RUN mkdir -p /var/otp/graphs
 WORKDIR /var/otp
 
 # Download OpenTripPlanner
-RUN wget --no-check-certificate https://github.com/opentripplanner/OpenTripPlanner/releases/download/v${OTP_VERSION}/otp-${OTP_VERSION}-shaded.jar -O otp.jar
+# Note: The -k flag is used here for compatibility with development/CI environments
+# that may have self-signed certificates. In production builds without certificate
+# issues, you can safely remove the -k flag for secure downloads.
+RUN curl -kL -o otp.jar \
+    https://github.com/opentripplanner/OpenTripPlanner/releases/download/v${OTP_VERSION}/otp-${OTP_VERSION}-shaded.jar
 
 # Expose OTP API port
 EXPOSE 8080
 
+# Create entrypoint script to use JAVA_OPTS environment variable
+RUN echo '#!/bin/sh\nexec java $JAVA_OPTS -jar otp.jar "$@"' > /var/otp/entrypoint.sh && \
+    chmod +x /var/otp/entrypoint.sh
+
 # Set default command to run OTP
 # Users can mount their data at /var/otp/graphs
-CMD ["java", "-Xmx4G", "-jar", "otp.jar", "--load", "/var/otp/graphs", "--serve"]
+ENTRYPOINT ["/var/otp/entrypoint.sh"]
+CMD ["--load", "/var/otp/graphs", "--serve"]
