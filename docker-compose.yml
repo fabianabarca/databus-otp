@@ -1,0 +1,14 @@
+services:
+  otp:
+    build: .
+    container_name: opentripplanner
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount local data directory to container
+      # Place your GTFS and OSM files in ./data directory
+      - ./data:/var/otp/graphs
+    environment:
+      # Adjust JVM memory settings as needed
+      - JAVA_OPTS=-Xmx4G
+    restart: unless-stopped
